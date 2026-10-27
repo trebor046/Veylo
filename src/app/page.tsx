@@ -157,7 +157,7 @@ export default function Home() {
             <p>{error}</p>
             {error.includes("não configurada") && (
               <p className="mt-2 text-xs text-rose-200/70">
-                Adicione <span className="font-mono">CONVERSION_API_URL</span> nas variáveis de ambiente da Vercel com o valor <span className="font-mono">https://veylo-api-srik.onrender.com</span>
+                Use <span className="font-mono">CONVERSION_API_URL</span> = <span className="font-mono">https://veylo-api-srik.onrender.com</span> em Vercel &gt; Settings &gt; Environment Variables e faça Redeploy.
               </p>
             )}
           </div>

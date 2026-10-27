@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     if (!CONVERSION_API) {
       return NextResponse.json(
-        { error: "API de conversão não configurada. Adicione CONVERSION_API_URL nas variáveis da Vercel." },
+        { error: `API de conversão não configurada. Defina CONVERSION_API_URL = https://veylo-api-srik.onrender.com nas variáveis de ambiente da Vercel (Settings > Environment Variables) e faça Redeploy.` },
         { status: 500 }
       );
     }
