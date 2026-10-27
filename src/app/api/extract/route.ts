@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const COBALT_API = process.env.CONVERSION_API_URL || "https://api.cobalt.tools/api/json";
+const CONVERSION_API = process.env.CONVERSION_API_URL;
 
 export async function POST(req: Request) {
   try {
@@ -11,16 +11,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "URL necessária" }, { status: 400 });
     }
 
-    const res = await fetch(COBALT_API, {
+    if (!CONVERSION_API) {
+      return NextResponse.json(
+        { error: "API de conversão não configurada. Adicione CONVERSION_API_URL nas variáveis da Vercel." },
+        { status: 500 }
+      );
+    }
+
+    const res = await fetch(CONVERSION_API, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "User-Agent": "Veylo/1.0 (+https://github.com/trebor046/Veylo)",
       },
       body: JSON.stringify({
         url,
-        filenameStyle: "basic",
+        action: "extract",
       }),
       cache: "no-store",
     });
@@ -28,7 +34,7 @@ export async function POST(req: Request) {
     const data = await res.json().catch(() => null);
 
     if (!res.ok || !data) {
-      console.error("Cobalt extract error:", res.status, data);
+      console.error("Convert API extract error:", res.status, data);
       return NextResponse.json(
         { error: "Não foi possível extrair os formatos deste link" },
         { status: 500 }
