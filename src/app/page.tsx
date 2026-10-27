@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDownToLine, Link2, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Format = {
   key: string;
@@ -15,6 +15,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [formats, setFormats] = useState<Format[]>([]);
   const [error, setError] = useState("");
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   const handleExtract = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,7 +147,7 @@ export default function Home() {
       </main>
 
       <footer className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6 text-sm text-zinc-500">
-        <span>© {new Date().getFullYear()} Veylo</span>
+        <span>© {year ?? new Date().getFullYear()} Veylo</span>
         <span>Feito para ser simples e prático</span>
       </footer>
     </div>
