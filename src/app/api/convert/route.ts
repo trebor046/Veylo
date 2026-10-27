@@ -18,7 +18,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const res = await fetch(CONVERSION_API, {
+    const baseUrl = CONVERSION_API.replace(/\/$/, "");
+    const res = await fetch(`${baseUrl}/convert`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -27,7 +28,6 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         url,
         format,
-        action: "convert",
       }),
       cache: "no-store",
     });

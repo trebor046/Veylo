@@ -18,7 +18,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const res = await fetch(CONVERSION_API, {
+    const baseUrl = CONVERSION_API.replace(/\/$/, "");
+    const res = await fetch(`${baseUrl}/extract`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         url,
-        action: "extract",
       }),
       cache: "no-store",
     });
