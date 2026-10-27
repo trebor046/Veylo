@@ -3,6 +3,8 @@
 import { ArrowDownToLine, ExternalLink, Link2, Loader2, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const API_BASE = "https://veylo-api-srik.onrender.com";
+
 type Format = {
   key: string;
   label: string;
@@ -34,7 +36,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/extract", {
+      const res = await fetch(`${API_BASE}/extract`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url.trim() }),
@@ -58,7 +60,7 @@ export default function Home() {
     setError("");
 
     try {
-      const res = await fetch("/api/convert", {
+      const res = await fetch(`${API_BASE}/convert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url.trim(), format: format.key }),
@@ -155,11 +157,6 @@ export default function Home() {
         {error && (
           <div className="mt-6 w-full max-w-3xl rounded-2xl border border-rose-400/40 bg-rose-500/10 px-5 py-4 text-center text-sm text-rose-100 backdrop-blur-xl">
             <p>{error}</p>
-            {error.includes("não configurada") && (
-              <p className="mt-2 text-xs text-rose-200/70">
-                Use <span className="font-mono">CONVERSION_API_URL</span> = <span className="font-mono">https://veylo-api-srik.onrender.com</span> em Vercel &gt; Settings &gt; Environment Variables e faça Redeploy.
-              </p>
-            )}
           </div>
         )}
 
