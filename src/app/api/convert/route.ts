@@ -8,11 +8,11 @@ export async function POST(req: Request) {
     const { url, format } = body;
 
     if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
+      return NextResponse.json({ error: "URL necessária" }, { status: 400 });
     }
 
     let payload: any = {
-      url: url,
+      url,
       filenameStyle: "basic",
     };
 
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       payload.vQuality = "max";
     } else if (format === "webm") {
       payload.vCodec = "vp9";
+      payload.vQuality = "max";
     } else if (format === "m4a") {
       payload.aFormat = "m4a";
       payload.isAudioOnly = true;
@@ -32,23 +33,37 @@ export async function POST(req: Request) {
     const res = await fetch(COBALT_API, {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
+        "User-Agent": "Veylo/1.0 (+https://github.com/trebor046/Veylo)",
       },
       body: JSON.stringify(payload),
+      cache: "no-store",
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ error: "Failed to convert" }, { status: 500 });
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data) {
+      console.error("Cobalt convert error:", res.status, data);
+      return NextResponse.json(
+        { error: "Não foi possível gerar o link de download" },
+        { status: 500 }
+      );
     }
 
-    const data = await res.json();
+    const downloadUrl = data.url || data.downloadUrl || (Array.isArray(data.url) ? data.url[0] : null);
 
-    return NextResponse.json({
-      downloadUrl: data.url || data.downloadUrl,
-      status: data.status,
-    });
+    if (!downloadUrl) {
+      console.error("Cobalt convert missing url:", data);
+      return NextResponse.json(
+        { error: "Não foi possível obter o link de download" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ downloadUrl });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Convert route error:", error);
+    return NextResponse.json({ error: "Erro interno ao converter" }, { status: 500 });
   }
 }

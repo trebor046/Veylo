@@ -8,32 +8,33 @@ export async function POST(req: Request) {
     const { url } = body;
 
     if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
+      return NextResponse.json({ error: "URL necessária" }, { status: 400 });
     }
 
-    // Usando Cobalt API para extrair formatos
     const res = await fetch(COBALT_API, {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
+        "User-Agent": "Veylo/1.0 (+https://github.com/trebor046/Veylo)",
       },
       body: JSON.stringify({
-        url: url,
-        vCodec: "h264",
-        vQuality: "max",
-        aFormat: "mp3",
+        url,
         filenameStyle: "basic",
       }),
+      cache: "no-store",
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ error: "Failed to extract" }, { status: 500 });
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data) {
+      console.error("Cobalt extract error:", res.status, data);
+      return NextResponse.json(
+        { error: "Não foi possível extrair os formatos deste link" },
+        { status: 500 }
+      );
     }
 
-    const data = await res.json();
-
-    // Formatar resposta para o frontend
     const formats = [
       {
         key: "mp4",
@@ -61,8 +62,9 @@ export async function POST(req: Request) {
       },
     ];
 
-    return NextResponse.json({ formats, raw: data });
+    return NextResponse.json({ formats });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Extract route error:", error);
+    return NextResponse.json({ error: "Erro interno ao processar o link" }, { status: 500 });
   }
 }
