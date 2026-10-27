@@ -73,7 +73,12 @@ export default function Home() {
       }
 
       if (data.downloadUrl) {
-        window.open(data.downloadUrl, "_blank");
+        const a = document.createElement("a");
+        a.href = data.downloadUrl;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     } catch (err: any) {
       setError(err.message || "Não foi possível gerar o link de download.");
