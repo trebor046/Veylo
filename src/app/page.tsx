@@ -153,8 +153,13 @@ export default function Home() {
         </form>
 
         {error && (
-          <div className="mt-6 w-full max-w-3xl rounded-2xl border border-rose-400/40 bg-rose-500/10 px-5 py-3 text-center text-sm text-rose-100 backdrop-blur-xl">
-            {error}
+          <div className="mt-6 w-full max-w-3xl rounded-2xl border border-rose-400/40 bg-rose-500/10 px-5 py-4 text-center text-sm text-rose-100 backdrop-blur-xl">
+            <p>{error}</p>
+            {error.includes("não configurada") && (
+              <p className="mt-2 text-xs text-rose-200/70">
+                Adicione <span className="font-mono">CONVERSION_API_URL</span> nas variáveis de ambiente da Vercel com o valor <span className="font-mono">https://veylo-api-srik.onrender.com</span>
+              </p>
+            )}
           </div>
         )}
 
