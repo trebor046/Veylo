@@ -147,7 +147,7 @@ export default function Home() {
       </main>
 
       <footer className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6 text-sm text-zinc-500">
-        <span>© {year ?? new Date().getFullYear()} Veylo</span>
+        <span>© {year} Veylo</span>
         <span>Feito para ser simples e prático</span>
       </footer>
     </div>
